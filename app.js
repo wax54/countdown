@@ -2,7 +2,11 @@ const countdownButton = document.getElementById('newCountdown');
 countdownButton.addEventListener('click', newCountdown);
 
 function newCountdown(evt){
-   console.log('hello'); 
+   const newTr = document.createElement('tr');
+   appendTd(newTr, "hello", 'label');
+   appendTd(newTr, "20 Years", 'count');
+   insertARow(newTr);
+   
 }
 
 
@@ -21,7 +25,14 @@ function appendTd(tr, value, type){
     tr.append(td);
 }
 
-function addARow(){
-    const tbody = document.get
+function addARow(newTr){
+    const tbody = document.getElementById('countList');
+    tbody.prepend(newTr);
+    return newTr
+}
+function insertARow(newTr){
+    const tbody = document.getElementById('countList');
+    tbody.prepend(newTr);
+    return newTr
 
 }
