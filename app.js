@@ -2,13 +2,34 @@ const countdownButton = document.getElementById('newCountdown');
 countdownButton.addEventListener('click', newCountdown);
 
 function newCountdown(evt){
-   const newTr = document.createElement('tr');
-   appendTd(newTr, "hello", 'label');
-   appendTd(newTr, "20 Years", 'count');
-   insertARow(newTr);
+    const endTime = getCountToDate();
+    const now = new Date();
+    const diff = diffOfDates(now, endTime);
+    const newTr = document.createElement('tr');
+    appendTd(newTr, ` countDown To ${endTime} from ${now}`, 'label');
+    appendTd(newTr, diff, 'count');
+    insertARow(newTr);
    
 }
 
+function getCountToTime(){
+    const input = document.getElementById('countTo');
+    const countTo = new Date(input.value);
+    return countTo.getTime();
+}
+function getCountToDate(){
+    const input = document.getElementById('countTo');
+    const countTo = new Date(input.value);
+    return countTo;
+}
+
+function diffOfMillis(firstTime, secondTime){
+    return  secondTime - firstTime;
+}
+
+function diffOfDates(firstDate, secondDate){
+    return  secondDate.getTime() - firstDate.getTime();
+}
 
 /**
  * Should create a new td with inner text of value and the class 
