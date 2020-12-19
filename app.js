@@ -13,13 +13,15 @@ function newCountdown(evt){
 }
 
 function getCountToTime(){
-    const input = document.getElementById('countTo');
-    const countTo = new Date(input.value);
+    const dateIn =  document.getElementById('date');
+    const timeIn =  document.getElementById('time');
+    const countTo = new Date(dateIn.value + " "  + timeIn.value);
     return countTo.getTime();
 }
 function getCountToDate(){
-    const input = document.getElementById('countTo');
-    const countTo = new Date(input.value);
+    const dateIn =  document.getElementById('date');
+    const timeIn =  document.getElementById('time');
+    const countTo = new Date(dateIn.value + " " + timeIn.value);
     return countTo;
 }
 
