@@ -1,16 +1,17 @@
 const countdownButton = document.getElementById('newCountdown');
     countdownButton.addEventListener('click', newCountdown);
-    let timers = [];    
-    setUpTimers();
-    setUpDOM(timers);
+let timernum = 0;
+let timers = [];    
+setUpTimers();
+setUpDOM(timers);
 
 function newCountdown(evt){
     const endTime = getCountToDate();
     const diff = howLongFromNow(endTime);
     const title = getTitle();
-
-    addCountdownToDOM(title, diff, timers.length);
+    
     storeTimer(title, endTime);
+    addCountdownToDOM(title, diff);
    
 }
 
@@ -18,29 +19,34 @@ function deleteTimer(evt){
     parent = evt.target.parentElement;
     id = parent.id;
     parent.remove();
-    timers.splice(id,1);
+    timers.forEach(function(val , i, arr ){
+        if(val.id == id){
+            arr.splice(i,1);
+        }
+    });
     updateStoredtimers(timers);
 }
 
 function setUpTimers(){
     test = getTimers();
     if(!test){
-        storeTimer('xmas 2021', new Date(16404408000000));
+        timernum++;
+        storeTimer('xmas 2021', new Date(16404408000000), timernum);
     }else {
         timers = test;
     }
 }
 
 function setUpDOM(){
-    timers.forEach(function(val, i){
-        addCountdownToDOM(val.label, new Date(val.endTime), i);
+    timers.forEach(function(val){
+        addCountdownToDOM(val.label, new Date(val.endTime), val.id);
     })
 }
-function addCountdownToDOM(title, howLong, id = -1){
+function addCountdownToDOM(title, howLong,){
     const newTr = document.createElement('tr');
-    if(id !== -1){
-        newTr.id = id;
-    }    
+    
+    newTr.id = timernum;
+     
     appendTd(newTr, title, 'label');
     appendTd(newTr, howLong, 'count');
     appendDeleteBtn(newTr);
@@ -53,15 +59,18 @@ function addCountdownToDOM(title, howLong, id = -1){
 function getTimers(){
     if(localStorage.timers){
         newTimers = JSON.parse(localStorage.timers);
+        timernum = newTimers[newTimers.length-1].timernum;
         return newTimers;
     }else {return false;}
 
 }
 
 function storeTimer(label, end){
+    timernum++;
     const newTimer = {
         'label' : label,
-        'endTime' : end.getTime()
+        'endTime' : end.getTime(),
+        'timernum' : timernum
     };
     timers.push(newTimer);
     localStorage.timers = JSON.stringify(timers);
