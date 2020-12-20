@@ -1,15 +1,79 @@
 const countdownButton = document.getElementById('newCountdown');
-countdownButton.addEventListener('click', newCountdown);
+    countdownButton.addEventListener('click', newCountdown);
+    let timers = [];    
+    setUpTimers();
+    setUpDOM(timers);
 
 function newCountdown(evt){
     const endTime = getCountToDate();
-    const now = new Date();
-    const diff = diffOfDates(now, endTime);
-    const newTr = document.createElement('tr');
-    appendTd(newTr, ` countDown To ${endTime} from ${now}`, 'label');
-    appendTd(newTr, diff, 'count');
-    insertARow(newTr);
+    const diff = howLongFromNow(endTime);
+    const title = getTitle();
+
+    addCountdownToDOM(title, diff, timers.length);
+    storeTimer(title, endTime);
    
+}
+
+function deleteTimer(evt){
+    parent = evt.target.parentElement;
+    id = parent.id;
+    parent.remove();
+    timers.splice(id,1);
+    updateStoredtimers(timers);
+}
+
+function setUpTimers(){
+    test = getTimers();
+    if(!test){
+        storeTimer('xmas 2021', new Date(16404408000000));
+    }else {
+        timers = test;
+    }
+}
+
+function setUpDOM(){
+    timers.forEach(function(val, i){
+        addCountdownToDOM(val.label, new Date(val.endTime), i);
+    })
+}
+function addCountdownToDOM(title, howLong, id = -1){
+    const newTr = document.createElement('tr');
+    if(id !== -1){
+        newTr.id = id;
+    }    
+    appendTd(newTr, title, 'label');
+    appendTd(newTr, howLong, 'count');
+    appendDeleteBtn(newTr);
+    insertARow(newTr);
+}
+
+/**
+ * Returns false on empty
+ */
+function getTimers(){
+    if(localStorage.timers){
+        newTimers = JSON.parse(localStorage.timers);
+        return newTimers;
+    }else {return false;}
+
+}
+
+function storeTimer(label, end){
+    const newTimer = {
+        'label' : label,
+        'endTime' : end.getTime()
+    };
+    timers.push(newTimer);
+    localStorage.timers = JSON.stringify(timers);
+}
+
+function updateStoredtimers(timers){
+    localStorage.timers = JSON.stringify(timers);
+}
+
+function getTitle(){
+    const titleIn =  document.getElementById('title');
+    return titleIn.value;
 }
 
 function getCountToTime(){
@@ -23,6 +87,12 @@ function getCountToDate(){
     const timeIn =  document.getElementById('time');
     const countTo = new Date(dateIn.value + " " + timeIn.value);
     return countTo;
+}
+
+
+function howLongFromNow(then){
+    const now = new Date();
+    return diffOfDates(now, then);
 }
 
 function diffOfMillis(firstTime, secondTime){
@@ -46,6 +116,20 @@ function appendTd(tr, value, type){
     td.innerText = value;
     td.classList.add(type);
     tr.append(td);
+}
+
+/**
+ *  Creates a new td with the innerText of 'X' and deleteServer click listener
+ *   and appends it to the passed tr
+ * 
+ * @param {HTMLTableRowElement} tr 
+ */
+function appendDeleteBtn(tr){
+    let newTd = document.createElement('td');
+    newTd.innerText = 'X';
+    newTd.classList.add('delButton');
+    newTd.addEventListener('click', deleteTimer);
+    tr.append(newTd);
 }
 
 function addARow(newTr){
