@@ -1,5 +1,6 @@
 const countdownButton = document.getElementById('newCountdown');
     countdownButton.addEventListener('click', newCountdown);
+
 let timernum = 0;
 let timers = [];    
 setUpTimers();
@@ -19,19 +20,19 @@ function deleteTimer(evt){
     parent = evt.target.parentElement;
     id = parent.id;
     parent.remove();
+    console.log('id',id);
     timers.forEach(function(val , i, arr ){
-        if(val.id == id){
+        if(val.timernum == id){
             arr.splice(i,1);
         }
     });
-    updateStoredtimers(timers);
+    updateStoredtimers();
 }
 
 function setUpTimers(){
     test = getTimers();
     if(!test){
-        timernum++;
-        storeTimer('xmas 2021', new Date(16404408000000), timernum);
+        storeTimer('xmas 2021', new Date(16404408000000));
     }else {
         timers = test;
     }
@@ -39,13 +40,18 @@ function setUpTimers(){
 
 function setUpDOM(){
     timers.forEach(function(val){
-        addCountdownToDOM(val.label, new Date(val.endTime), val.id);
+        console.log(val.timernum);
+        addCountdownToDOM(val.label, new Date(val.endTime), val.timernum);
     })
 }
-function addCountdownToDOM(title, howLong,){
+function addCountdownToDOM(title, howLong, rowId = undefined){
     const newTr = document.createElement('tr');
-    
-    newTr.id = timernum;
+    console.log(rowId);
+    if(rowId != undefined){
+        newTr.id = rowId;
+    }else {
+        newTr.id = timernum;
+    }
      
     appendTd(newTr, title, 'label');
     appendTd(newTr, howLong, 'count');
@@ -59,9 +65,14 @@ function addCountdownToDOM(title, howLong,){
 function getTimers(){
     if(localStorage.timers){
         newTimers = JSON.parse(localStorage.timers);
-        timernum = newTimers[newTimers.length-1].timernum;
-        return newTimers;
-    }else {return false;}
+        if(newTimers[0]){
+            timernum = [newTimers.length-1].timernum;
+            return newTimers;
+        }
+    }
+
+    return false;
+    
 
 }
 
@@ -73,10 +84,10 @@ function storeTimer(label, end){
         'timernum' : timernum
     };
     timers.push(newTimer);
-    localStorage.timers = JSON.stringify(timers);
+    updateStoredtimers();
 }
 
-function updateStoredtimers(timers){
+function updateStoredtimers(){
     localStorage.timers = JSON.stringify(timers);
 }
 
@@ -143,7 +154,7 @@ function appendDeleteBtn(tr){
 
 function addARow(newTr){
     const tbody = document.getElementById('countList');
-    tbody.prepend(newTr);
+    tbody.append(newTr);
     return newTr
 }
 function insertARow(newTr){
