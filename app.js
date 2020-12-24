@@ -20,7 +20,6 @@ function deleteTimer(evt){
     parent = evt.target.parentElement;
     id = parent.id;
     parent.remove();
-    console.log('id',id);
     timers.forEach(function(val , i, arr ){
         if(val.timernum == id){
             arr.splice(i,1);
@@ -30,7 +29,7 @@ function deleteTimer(evt){
 }
 
 function setUpTimers(){
-    test = getTimers();
+    const test = getTimers();
     if(!test){
         storeTimer('xmas 2021', new Date(16404408000000));
     }else {
@@ -40,18 +39,16 @@ function setUpTimers(){
 
 function setUpDOM(){
     timers.forEach(function(val){
-        console.log(val.timernum);
         addCountdownToDOM(val.label, new Date(val.endTime), val.timernum);
     })
 }
 function addCountdownToDOM(title, howLong, rowId = undefined){
     const newTr = document.createElement('tr');
-    console.log(rowId);
-    if(rowId != undefined){
-        newTr.id = rowId;
-    }else {
-        newTr.id = timernum;
+    
+    if(rowId == undefined){
+        rowId = timernum;
     }
+    newTr.id = rowId;
      
     appendTd(newTr, title, 'label');
     appendTd(newTr, howLong, 'count');
@@ -64,9 +61,9 @@ function addCountdownToDOM(title, howLong, rowId = undefined){
  */
 function getTimers(){
     if(localStorage.timers){
-        newTimers = JSON.parse(localStorage.timers);
+        let newTimers = JSON.parse(localStorage.timers);
         if(newTimers[0]){
-            timernum = [newTimers.length-1].timernum;
+            timernum = newTimers[newTimers.length-1].timernum;
             return newTimers;
         }
     }
