@@ -6,6 +6,12 @@ let timers = [];
 setUpTimers();
 setUpDOM(timers);
 
+
+/**
+ *  whenever a add timer click happens, this function fires
+ * 
+ * @param { clickEvent } evt the clicked buttons event, not used
+ */
 function newCountdown(evt){
     const endTime = getCountToDate();
     const diff = howLongFromNow(endTime);
@@ -16,15 +22,46 @@ function newCountdown(evt){
    
 }
 
-function deleteTimer(evt){
-    parent = evt.target.parentElement;
-    id = parent.id;
+//Timer Functions
+
+
+/**
+ * The function called when a timer delete button has been clicked
+ * 
+ * @param { clickEvent } evt Expecting the parent element of the clicked button to have the timers id 
+ */
+function deleteClicked(evt){
+    // gets the parent of the clicked button from the DOM
+    const parent = evt.target.parentElement;
+
+    //Gets the timer id from the parent object
+    const id = parent.id;
+    
+    //removes the timer from the shared array, timers
+    deleteTimer(id);
+
+    //removes the parent from the DOM #cleanUp
     parent.remove();
-    timers.forEach(function(val , i, arr ){
+
+}
+/**
+ * uses the shared timers array 
+ * iterates through the timers array 
+ * checks each timer's timernum to see if it's the same as id
+ * if it is, it removes it from the array and updates the localStorage
+ * 
+ * @param { number } id the id or a string representing the id of 
+ *  the timer you wish to be deleted 
+ */
+
+function deleteTimer(id){
+
+    timers.forEach(function(val , i, arr){
         if(val.timernum == id){
             arr.splice(i,1);
         }
     });
+    //updates the localStorage #cleanUp
     updateStoredtimers();
 }
 
@@ -145,7 +182,7 @@ function appendDeleteBtn(tr){
     let newTd = document.createElement('td');
     newTd.innerText = 'X';
     newTd.classList.add('delButton');
-    newTd.addEventListener('click', deleteTimer);
+    newTd.addEventListener('click', deleteClicked);
     tr.append(newTd);
 }
 
