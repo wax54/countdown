@@ -18,7 +18,7 @@ function newCountdown(evt){
     const title = getTitle();
     
     storeTimer(title, endTime);
-    addCountdownToDOM(title, diff);
+    addCountdownToDOM(title, diff, timernum);
    
 }
 
@@ -46,9 +46,9 @@ function deleteClicked(evt){
 }
 /**
  * uses the shared timers array 
- * iterates through the timers array 
- * checks each timer's timernum to see if it's the same as id
- * if it is, it removes it from the array and updates the localStorage
+ *  iterates through the timers array 
+ *  checks each timer's timernum to see if it's the same as id
+ *  if it is, it removes it from the array and updates the localStorage
  * 
  * @param { number } id the id or a string representing the id of 
  *  the timer you wish to be deleted 
@@ -76,21 +76,51 @@ function setUpTimers(){
 
 function setUpDOM(){
     timers.forEach(function(val){
-        addCountdownToDOM(val.label, new Date(val.endTime), val.timernum);
+        intervalId = setInterval(function(){
+            updateTimeById(val)
+        },1000);
+        addCountdownToDOM(val.label, new Date(val.endTime), val.timernum, intervalId);
+        
     })
 }
-function addCountdownToDOM(title, howLong, rowId = undefined){
+function addCountdownToDOM(title, howLong, rowId, intervalId){
     const newTr = document.createElement('tr');
     
-    if(rowId == undefined){
-        rowId = timernum;
-    }
     newTr.id = rowId;
-     
+    newTr.dataset.intervalId = intervalId;
     appendTd(newTr, title, 'label');
     appendTd(newTr, howLong, 'count');
     appendDeleteBtn(newTr);
+
     insertARow(newTr);
+}
+
+function updateTimeById(timer){
+
+    const timerRow = document.getElementById(timer.timernum);
+
+    const count = timerRow.querySelector('.count');
+
+    const howLong = howLongFromNow(new Date(timer.endTime));
+
+    const formated = timeFormat(howLong, 2);
+
+    count.innerText = howLong;
+} 
+
+function timeFormat(ms, specificity){
+    const ms = 
+    const s;
+    const m
+    const h
+    const define([
+        'require',
+        'dependency'
+    ], function(require, factory) {
+        'use strict';
+        
+    });
+    
 }
 
 /**
