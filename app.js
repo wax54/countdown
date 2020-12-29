@@ -37,6 +37,8 @@ function deleteClicked(evt){
     //Gets the timer id from the parent object
     const id = parent.id;
     
+    const intervalId = parent.dataset.intervalId;
+    clearInterval(intervalId);
     //removes the timer from the shared array, timers
     deleteTimer(id);
 
@@ -77,7 +79,7 @@ function setUpTimers(){
 function setUpDOM(){
     timers.forEach(function(val){
         intervalId = setInterval(function(){
-            updateTimeById(val)
+            updateTime(val)
         },1000);
         addCountdownToDOM(val.label, new Date(val.endTime), val.timernum, intervalId);
         
@@ -95,7 +97,7 @@ function addCountdownToDOM(title, howLong, rowId, intervalId){
     insertARow(newTr);
 }
 
-function updateTimeById(timer){
+function updateTime(timer){
 
     const timerRow = document.getElementById(timer.timernum);
 
@@ -103,23 +105,43 @@ function updateTimeById(timer){
 
     const howLong = howLongFromNow(new Date(timer.endTime));
 
-    const formated = timeFormat(howLong, 2);
+    const formatted = timeFormat(howLong, 2);
 
-    count.innerText = howLong;
+    count.innerText = formatted;
 } 
 
 function timeFormat(ms, specificity){
-    const ms = 
-    const s;
-    const m
-    const h
-    const define([
-        'require',
-        'dependency'
-    ], function(require, factory) {
-        'use strict';
-        
-    });
+    const MSINYEAR = 31540000000;
+    const MSINMONTH = 2628000000;
+    const MSINDAY = 86400000;
+    const MSINHOUR = 3600000;
+    const MSINMINUTE = 60000;
+    const MSINSEC = 1000;
+    
+
+
+    const y = Math.floor(ms / MSINYEAR);
+    ms = ms - (y*MSINYEAR);
+
+    const mth = Math.floor(ms / MSINMONTH);
+    ms = ms - (mth*MSINMONTH);
+
+    const d = Math.floor(ms / MSINDAY);
+    ms = ms - (d*MSINDAY);
+
+    const h = Math.floor(ms /MSINHOUR);
+    ms = ms - (h*MSINHOUR);
+
+    const min = Math.floor(ms / MSINMINUTE);
+
+    ms = ms - (min*MSINMINUTE);
+    const s = Math.floor(ms / MSINSEC);
+    
+    ms = ms - (s*MSINSEC);
+
+
+
+    return `${y}Years, ${mth}Months, ${d}Days, ${h}Hours, ${min}Minutes, ${s}Seconds, and ${ms}Milliseconds,  `
     
 }
 
