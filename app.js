@@ -16,9 +16,14 @@ function newCountdown(evt){
     const endTime = getCountToDate();
     const diff = howLongFromNow(endTime);
     const title = getTitle();
-    
-    storeTimer(title, endTime);
-    addCountdownToDOM(title, diff, timernum);
+
+    const newTimer = storeTimer(title, endTime);
+
+    const intervalId = setInterval(function(){
+        updateTime(newTimer)
+    },1000);
+
+    addCountdownToDOM(title, diff, timernum, intervalId);
    
 }
 
@@ -70,7 +75,7 @@ function deleteTimer(id){
 function setUpTimers(){
     const test = getTimers();
     if(!test){
-        storeTimer('xmas 2021', new Date(16404408000000));
+        storeTimer('xmas 2021', new Date(1640440800000));
     }else {
         timers = test;
     }
@@ -78,7 +83,7 @@ function setUpTimers(){
 
 function setUpDOM(){
     timers.forEach(function(val){
-        intervalId = setInterval(function(){
+        const intervalId = setInterval(function(){
             updateTime(val)
         },1000);
         addCountdownToDOM(val.label, new Date(val.endTime), val.timernum, intervalId);
@@ -86,6 +91,8 @@ function setUpDOM(){
     })
 }
 function addCountdownToDOM(title, howLong, rowId, intervalId){
+    
+
     const newTr = document.createElement('tr');
     
     newTr.id = rowId;
@@ -111,37 +118,87 @@ function updateTime(timer){
 } 
 
 function timeFormat(ms, specificity){
-    const MSINYEAR = 31540000000;
-    const MSINMONTH = 2628000000;
-    const MSINDAY = 86400000;
-    const MSINHOUR = 3600000;
-    const MSINMINUTE = 60000;
     const MSINSEC = 1000;
+    const MSINMINUTE = 60000;
+    const MSINHOUR = 3600000;
+    const MSINDAY = 86400000;
+    const MSINMONTH = 2628000000;
+    const MSINYEAR = MSINMONTH * 12;
+
     
+    
+    let result = '';
+    let i = 0;
 
 
     const y = Math.floor(ms / MSINYEAR);
-    ms = ms - (y*MSINYEAR);
+    if(y){
+        i++;
+        ms = ms - (y*MSINYEAR);
+        result += y+' years ';
+        if(i == specificity){
+            return result;
+        }
+    }
+
 
     const mth = Math.floor(ms / MSINMONTH);
-    ms = ms - (mth*MSINMONTH);
+    if(mth){
+        i++;
+        ms = ms - (mth*MSINMONTH);
+        result += mth+' Months ';
+        if(i == specificity){
+            return result;
+        }
+    }
 
     const d = Math.floor(ms / MSINDAY);
-    ms = ms - (d*MSINDAY);
+    if(d){
+        i++;
+        ms = ms - (d*MSINDAY);
+        result += d+' Days ';
+        if(i == specificity){
+            return result;
+        }
+    }
 
     const h = Math.floor(ms /MSINHOUR);
-    ms = ms - (h*MSINHOUR);
+    if(h){
+        i++;
+        ms = ms - (h*MSINHOUR);
+        result += h+' Hours ';
+        if(i == specificity){
+            return result;
+        }
+    }
 
     const min = Math.floor(ms / MSINMINUTE);
-
-    ms = ms - (min*MSINMINUTE);
+    if(min){
+        i++;
+        ms = ms - (min*MSINMINUTE);
+        result += min+' mins ';
+        if(i == specificity){
+            return result;
+        }
+    }
     const s = Math.floor(ms / MSINSEC);
-    
-    ms = ms - (s*MSINSEC);
+    if(s){
+        i++;
+        ms = ms - (s*MSINSEC);
+        result += s+' seconds ';
+        if(i == specificity){
+            return result;
+        }
+    }
+    if(ms){
+        i++;
+        result += ms+' ms ';
+        if(i == specificity){
+            return result;
+        }
+    }
 
-
-
-    return `${y}Years, ${mth}Months, ${d}Days, ${h}Hours, ${min}Minutes, ${s}Seconds, and ${ms}Milliseconds,  `
+    return result;
     
 }
 
@@ -171,6 +228,7 @@ function storeTimer(label, end){
     };
     timers.push(newTimer);
     updateStoredtimers();
+    return newTimer;
 }
 
 function updateStoredtimers(){
