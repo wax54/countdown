@@ -16,7 +16,7 @@ function newCountdown(evt){
     const endTime = getCountToDate();
 
     const endDate = new Date(endTime);
-    const duration = howLongFromNow(endDate, 2);
+    const duration = howLongFromNowFormatted(endDate, 2);
     const title = getTitle();
 
     const newTimer = storeTimer(title, endTime);
