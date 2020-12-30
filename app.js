@@ -25,8 +25,6 @@ function newCountdown(evt){
         updateTime(newTimer)
     },1000);
 
-    const endDate = new Date(timer.endTime)
-    const howLong = howLongFromNowFormatted(endDate, 2);
     addCountdownToDOM(title, duration, timernum, intervalId);
    
 }
