@@ -14,7 +14,9 @@ setUpDOM(timers);
  */
 function newCountdown(evt){
     const endTime = getCountToDate();
-    const diff = howLongFromNow(endTime);
+
+    const endDate = new Date(endTime);
+    const duration = howLongFromNow(endDate, 2);
     const title = getTitle();
 
     const newTimer = storeTimer(title, endTime);
@@ -23,7 +25,9 @@ function newCountdown(evt){
         updateTime(newTimer)
     },1000);
 
-    addCountdownToDOM(title, diff, timernum, intervalId);
+    const endDate = new Date(timer.endTime)
+    const howLong = howLongFromNowFormatted(endDate, 2);
+    addCountdownToDOM(title, duration, timernum, intervalId);
    
 }
 
