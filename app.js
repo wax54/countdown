@@ -52,8 +52,7 @@ function deleteClicked(evt){
 
 }
 /**
- * uses the shared timers array 
- *  iterates through the timers array 
+ * Iterates through the timers array 
  *  checks each timer's timernum to see if it's the same as id
  *  if it is, it removes it from the array and updates the localStorage
  * 
@@ -82,17 +81,23 @@ function setUpTimers(){
 }
 
 function setUpDOM(){
-    timers.forEach(function(val){
+    timers.forEach(function(timer){
+        const endDate = new Date(timer.endTime)
+        const howLong = howLongFromNowFormatted(endDate, 2);
         const intervalId = setInterval(function(){
-            updateTime(val)
+            updateTime(timer)
         },1000);
-        addCountdownToDOM(val.label, new Date(val.endTime), val.timernum, intervalId);
+
+        addCountdownToDOM(timer.label, howLong, timer.timernum, intervalId);
         
-    })
+    });
+}
+function howLongFromNowFormatted(endDate, specificity){
+    const duration = howLongFromNow(endDate);
+    const howLongFormatted = timeFormat(duration, specificity);
+    return howLongFormatted;
 }
 function addCountdownToDOM(title, howLong, rowId, intervalId){
-    
-
     const newTr = document.createElement('tr');
     
     newTr.id = rowId;
@@ -110,97 +115,11 @@ function updateTime(timer){
 
     const count = timerRow.querySelector('.count');
 
-    const howLong = howLongFromNow(new Date(timer.endTime));
+    const howLong = howLongFromNowFormatted(new Date(timer.endTime),2);
 
-    const formatted = timeFormat(howLong, 2);
-
-    count.innerText = formatted;
+    count.innerText = howLong;
 } 
 
-function timeFormat(ms, specificity){
-    const MSINSEC = 1000;
-    const MSINMINUTE = 60000;
-    const MSINHOUR = 3600000;
-    const MSINDAY = 86400000;
-    const MSINMONTH = 2628000000;
-    const MSINYEAR = MSINMONTH * 12;
-
-    
-    
-    let result = '';
-    let i = 0;
-
-
-    const y = Math.floor(ms / MSINYEAR);
-    if(y){
-        i++;
-        ms = ms - (y*MSINYEAR);
-        result += y+' years ';
-        if(i == specificity){
-            return result;
-        }
-    }
-
-
-    const mth = Math.floor(ms / MSINMONTH);
-    if(mth){
-        i++;
-        ms = ms - (mth*MSINMONTH);
-        result += mth+' Months ';
-        if(i == specificity){
-            return result;
-        }
-    }
-
-    const d = Math.floor(ms / MSINDAY);
-    if(d){
-        i++;
-        ms = ms - (d*MSINDAY);
-        result += d+' Days ';
-        if(i == specificity){
-            return result;
-        }
-    }
-
-    const h = Math.floor(ms /MSINHOUR);
-    if(h){
-        i++;
-        ms = ms - (h*MSINHOUR);
-        result += h+' Hours ';
-        if(i == specificity){
-            return result;
-        }
-    }
-
-    const min = Math.floor(ms / MSINMINUTE);
-    if(min){
-        i++;
-        ms = ms - (min*MSINMINUTE);
-        result += min+' mins ';
-        if(i == specificity){
-            return result;
-        }
-    }
-    const s = Math.floor(ms / MSINSEC);
-    if(s){
-        i++;
-        ms = ms - (s*MSINSEC);
-        result += s+' seconds ';
-        if(i == specificity){
-            return result;
-        }
-    }
-    if(ms){
-        i++;
-        result += ms+' ms ';
-        if(i == specificity){
-            return result;
-        }
-    }
-
-    return result;
-    
-}
 
 /**
  * Returns false on empty
@@ -213,10 +132,7 @@ function getTimers(){
             return newTimers;
         }
     }
-
     return false;
-    
-
 }
 
 function storeTimer(label, end){
@@ -306,4 +222,90 @@ function insertARow(newTr){
     tbody.prepend(newTr);
     return newTr
 
+}
+
+
+function timeFormat(ms, specificity){
+    const MSINSEC = 1000;
+    const MSINMINUTE = 60000;
+    const MSINHOUR = 3600000;
+    const MSINDAY = 86400000;
+    const MSINMONTH = 2628000000;
+    const MSINYEAR = MSINMONTH * 12;
+
+    
+    
+    let result = '';
+    let i = 0;
+
+
+    const y = Math.floor(ms / MSINYEAR);
+    if(y){
+        i++;
+        ms = ms - (y*MSINYEAR);
+        result += y+' years ';
+        if(i == specificity){
+            return result;
+        }
+    }
+
+
+    const mth = Math.floor(ms / MSINMONTH);
+    if(mth){
+        i++;
+        ms = ms - (mth*MSINMONTH);
+        result += mth+' Months ';
+        if(i == specificity){
+            return result;
+        }
+    }
+
+    const d = Math.floor(ms / MSINDAY);
+    if(d){
+        i++;
+        ms = ms - (d*MSINDAY);
+        result += d+' Days ';
+        if(i == specificity){
+            return result;
+        }
+    }
+
+    const h = Math.floor(ms /MSINHOUR);
+    if(h){
+        i++;
+        ms = ms - (h*MSINHOUR);
+        result += h+' Hours ';
+        if(i == specificity){
+            return result;
+        }
+    }
+
+    const min = Math.floor(ms / MSINMINUTE);
+    if(min){
+        i++;
+        ms = ms - (min*MSINMINUTE);
+        result += min+' mins ';
+        if(i == specificity){
+            return result;
+        }
+    }
+    const s = Math.floor(ms / MSINSEC);
+    if(s){
+        i++;
+        ms = ms - (s*MSINSEC);
+        result += s+' seconds ';
+        if(i == specificity){
+            return result;
+        }
+    }
+    if(ms){
+        i++;
+        result += ms+' ms ';
+        if(i == specificity){
+            return result;
+        }
+    }
+
+    return result;
+    
 }
