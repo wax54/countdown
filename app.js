@@ -98,7 +98,6 @@ function getCountToDate(){
     return countTo;
 }
 
-
 function howLongFromNow(then){
     const now = new Date();
     return diffOfDates(now, then);
